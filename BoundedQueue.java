@@ -1,25 +1,37 @@
 package pxr180025;
 import java.util.Scanner;
 
-public class BoundedQueue<T> {
+
+
+public class BoundedQueue<T>
+{
 	
-	private int queueSize;
-	private int currSize = 0;
-	private int front,rear;
-	private T queue[];
+	private T[] queue;
+	private int size;
+	private int front, rear;
+	private int currSize;
 	
-	public BoundedQueue(int size) {
-		queue = (T[]) new Object[size] ;
-		this.queueSize = size;
-		this.front = this.rear = this.currSize = 0;
+	@SuppressWarnings("unchecked")
+	public BoundedQueue(int size)                
+	{
+		queue = (T[]) new Object[size];
+		this.size = size;
+		front = 0;
+		rear = 0;
+		currSize = 0;
 	}
 	
-	public boolean offer(T entry) {
-		if(isFull()) {
+	// add elements to queue
+	private boolean offer(T x)                 
+	{
+		// return false if queue full
+		if (currSize==size)
 			return false;
-		}
-		queue[rear] = entry;
-		if(rear == queueSize -1) {
+		
+		queue[rear] = x;
+		
+		//reset rear pointer
+		if(rear == size -1) {
 			rear =0;
 		}else {
 			rear++;
@@ -29,150 +41,133 @@ public class BoundedQueue<T> {
 		
 	}
 	
-	public T poll() {
-		if(isEmpty()) {
+	//pop elements from queue
+	private T poll()
+	{
+		//return false if queue empty
+		if (isEmpty())
 			return null;
-		}
+		T x = queue[front];
 		
-		T value = queue[front];
-		queue[front] = null;
-		if(front == queueSize -1) {
+		//reset front pointer
+		if(front == size -1) {
 			front =0;
 		}else {
 			front++;
 		}
 		currSize--;
-		return value;
+		return x;
 	}
 	
-	public T peek() {
-		if(isEmpty()) {
+	
+	//peek top of queue
+	private T peek()                          
+	{
+		if (isEmpty())
 			return null;
-		}
-		return queue[front];
+		else
+			return queue[front];
 	}
 	
-	public int size() {
-		return currSize;
-		
+	//return queue size
+	private int size()                        
+	{
+		return (currSize);
 	}
 	
-	public boolean isEmpty() {
-		if( currSize == 0){
-			return true;
-		}
-		return false;
+	//check if queue empty
+	boolean isEmpty()                       
+	{
+		return (currSize==0);
 	}
 	
-	private boolean isFull() {
-		if( currSize == queueSize){
-			return true;
-		}
-		return false;
-	}
-	
-	public void clear() {
-		for(int i=0; i<currSize; i++) {
-			queue[i] = null;
-		}
-		
-		currSize = 0;
+	//clears the queue
+	public void clear() {   
 		front = 0;
 		rear = 0;
-		
+		currSize = 0;
+		System.out.println("Queue is cleared");
 	}
 	
-	public void toArray(T[] a) {
-		if (currSize ==0){
+	//copy queue elements to the array
+	@SuppressWarnings("unchecked")
+	public void toArray( Object[] arr) {          
+		
+		if (isEmpty()){
 			System.out.println("Queue is empty.");
 		}
-		int arrayLength = a.length;
+		arr = (T[]) new Object[currSize];
 		
 		for(int i = 0; i < currSize; i++) {
-			if(arrayLength > 0) {
-				if((front+i) < queueSize)
-					a[i] = queue[front+i]; 
-				else
-					a[i] = queue[(front+i)%queueSize]; 
-				arrayLength--;
-				
-			}
+			if((front+i) < size)
+				arr[i] = queue[front+i]; 
+			else
+				arr[i] = queue[(front+i)%size]; 
+			
 		}
+		
+		//print the array elements
+		System.out.println("Elements in the array: ");
+		for (int k = 0; k<currSize;k++)
+			System.out.print(arr[k]+"	");
+		System.out.println();
 	}
 	
-	public static void main(String args[]) {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the size of the queue:");
-		int size = sc.nextInt();
-		BoundedQueue<String> bq = new BoundedQueue(size);
-		int val;
-		boolean condition = true;
-		whileloop:
-			while(condition) {
-		
-				System.out.println("\n1. Offer \n2. Poll\n3. Peek\n4. Size\n5. isEmpty\n6. Clear\n7. toArray\nEnter your choice: ");
-				val = sc.nextInt();
-				switch(val) {
-		
-				case 1: 
-					System.out.println("Enter a string : ");
-					String str = sc.next();
-					if(bq.offer(str))
-						System.out.println("Element added to the queue");
-					else
-						System.out.println("Queue is full. Element not added!");
-					break;
-				case 2:
-					String str2 = bq.poll();
-					if (str2 != null)
-						System.out.println("Element popped: " + str2);
-					else
-						System.out.println("Queue is empty");
-					break;
-					
-				case 3:
-					String str3 = bq.peek();
-					if (str3 != null)
-						System.out.println("Element at top of queue: " + str3);
-					else
-						System.out.println("Queue is empty");
-					break;
-				case 4:
-					System.out.println("Size of queue : " + bq.currSize);
-					break;
-					
-				case 5:
-					if(bq.isEmpty())
-						System.out.println("Queue is empty");
-					else
-						System.out.println("Queue is not empty");
-					break;
-				case 6:
-					bq.clear();
-					System.out.println("Queue is cleared");
-					break;
-				
-				case 7:
-					System.out.println("Enter the size of the array : ");
-					int s = sc.nextInt();
-					
-					String arr[] = new String[s];
-					bq.toArray(arr);
-					System.out.println("Elements in the queue : ");
-					for(String x : arr) {
-						System.out.print(x + "	");
+	
+	public static void main(String[] args)
+	{
+		{
+			Scanner sc = new Scanner(System.in);
+			System.out.println("Enter queue size");
+			int size = sc.nextInt();
+			BoundedQueue<Integer> q1 = new BoundedQueue<>(size);
+			System.out.println("1.Offer	2.Poll	3.Peek	4.Size	5.IsEmpty  6.Clear 7.ToArray");
+			whileloop:
+				while(sc.hasNext()) {
+					int com = sc.nextInt();
+					switch(com)  {
+					case 1: 
+						System.out.println("Enter element to enqueue");
+						if (q1.offer(sc.nextInt()))
+							System.out.println("Element added to the queue");
+						else
+							System.out.println("Queue is full. Element not added!");
+						break;
+					case 2:						
+						if (!q1.isEmpty()) {							
+							System.out.println("Element popped: " + q1.poll());
+						}
+						else
+							System.out.println("Queue is empty");
+						break;
+					case 3:
+						if (!q1.isEmpty()) {
+							System.out.println("Peek: " + q1.peek());
+						}
+						else
+							System.out.println("Queue is empty");
+						break;						
+					case 4:
+						System.out.println("Queue size: " + q1.size());
+						break;
+					case 5:
+						System.out.println("Is queue empty: " + q1.isEmpty());
+						break;
+					case 6:
+						q1.clear();
+						break;
+					case 7:
+						Object[] arr = null;
+						q1.toArray(arr);
+						break;
+					default:
+						System.out.println("Invalid choice. Loop terminated.");
+						break whileloop;
 					}
-					break;
-				default:
-					condition = false;
-					System.out.println("Invalid choice. Loop terminated.");
-					break whileloop;		
-							
+				}
+
 		}
 		
+	
 	}
-	
-	
-	
-}
 }
