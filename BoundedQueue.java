@@ -1,3 +1,6 @@
+//Authors - Harshita Rastogi (HXR190001),
+//		    Prajakta Raj (PXR180025)
+
 package hxr190001;
 import java.util.Scanner;
 
